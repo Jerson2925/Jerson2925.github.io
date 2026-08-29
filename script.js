@@ -1,90 +1,76 @@
-```javascript
-// =========================
-// MOBILE MENU
-// =========================
+/* =====================================================
+   MOBILE MENU
+===================================================== */
 
-const menuIcon = document.getElementById("menuIcon");
-const navLinks = document.getElementById("navLinks");
+const menuToggle = document.getElementById("menu-toggle");
+const navLinks = document.getElementById("nav-links");
 
-menuIcon.addEventListener("click", () => {
+menuToggle.addEventListener("click", () => {
 
-    navLinks.classList.toggle("active");
+    navLinks.classList.toggle("show");
 
-    const icon = menuIcon.querySelector("i");
-
-    if (navLinks.classList.contains("active")) {
-
-        icon.classList.remove("fa-bars");
-        icon.classList.add("fa-xmark");
-
+    if (navLinks.classList.contains("show")) {
+        menuToggle.textContent = "✕";
     } else {
-
-        icon.classList.remove("fa-xmark");
-        icon.classList.add("fa-bars");
-
+        menuToggle.textContent = "☰";
     }
 
 });
 
 
-// =========================
-// CLOSE MENU
-// =========================
+/* =====================================================
+   CLOSE MOBILE MENU WHEN LINK IS CLICKED
+===================================================== */
 
-document.querySelectorAll(".nav-links a").forEach(link => {
+const navItems = document.querySelectorAll(".nav-link");
 
-    link.addEventListener("click", () => {
+navItems.forEach((item) => {
 
-        navLinks.classList.remove("active");
+    item.addEventListener("click", () => {
 
-        const icon = menuIcon.querySelector("i");
+        navLinks.classList.remove("show");
 
-        icon.classList.remove("fa-xmark");
-        icon.classList.add("fa-bars");
+        menuToggle.textContent = "☰";
 
     });
 
 });
 
 
-// =========================
-// ACTIVE NAVIGATION
-// =========================
+/* =====================================================
+   ACTIVE NAVIGATION LINK
+===================================================== */
 
 const sections = document.querySelectorAll("section");
-const links = document.querySelectorAll(".nav-links a");
 
 window.addEventListener("scroll", () => {
 
-    let current = "";
+    let currentSection = "";
 
-    sections.forEach(section => {
+    sections.forEach((section) => {
 
-        const sectionTop =
-            section.offsetTop - 150;
-
-        const sectionHeight =
-            section.clientHeight;
+        const sectionTop = section.offsetTop - 150;
+        const sectionHeight = section.clientHeight;
 
         if (
             window.scrollY >= sectionTop &&
             window.scrollY < sectionTop + sectionHeight
         ) {
 
-            current = section.getAttribute("id");
+            currentSection = section.getAttribute("id");
 
         }
 
     });
 
 
-    links.forEach(link => {
+    navItems.forEach((link) => {
 
         link.classList.remove("active");
 
         if (
             link.getAttribute("href") ===
-            "#" + current
+            "#" + currentSection
         ) {
 
             link.classList.add("active");
@@ -96,123 +82,130 @@ window.addEventListener("scroll", () => {
 });
 
 
-// =========================
-// SKILL BAR ANIMATION
-// =========================
+/* =====================================================
+   BACK TO TOP BUTTON
+===================================================== */
 
-const skillBars =
-    document.querySelectorAll(".skill-progress");
+const backToTop = document.getElementById("back-to-top");
 
+window.addEventListener("scroll", () => {
 
-const skillObserver =
-    new IntersectionObserver(
+    if (window.scrollY > 500) {
 
-        entries => {
+        backToTop.classList.add("show");
 
-            entries.forEach(entry => {
+    } else {
 
-                if (entry.isIntersecting) {
+        backToTop.classList.remove("show");
 
-                    entry.target.classList.add("show");
-
-                }
-
-            });
-
-        },
-
-        {
-            threshold: 0.5
-        }
-
-    );
-
-
-skillBars.forEach(skill => {
-
-    skillObserver.observe(skill);
+    }
 
 });
 
 
-// =========================
-// CONTACT FORM
-// =========================
+backToTop.addEventListener("click", () => {
 
-const contactForm =
-    document.getElementById("contactForm");
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
 
 
-contactForm.addEventListener(
-    "submit",
-    function(event) {
+/* =====================================================
+   SECTION SCROLL ANIMATION
+===================================================== */
 
-        event.preventDefault();
+const animatedSections =
+    document.querySelectorAll(".section");
 
-        const name =
-            document.getElementById("name").value;
+const observer = new IntersectionObserver(
+    (entries) => {
 
-        alert(
-            "Thank you, " +
-            name +
-            "! Your message has been received."
-        );
+        entries.forEach((entry) => {
 
-        contactForm.reset();
+            if (entry.isIntersecting) {
 
+                entry.target.classList.add("visible");
+
+            }
+
+        });
+
+    },
+    {
+        threshold: 0.12
     }
 );
 
 
-// =========================
-// SCROLL ANIMATION
-// =========================
+animatedSections.forEach((section) => {
 
-const animatedElements =
-    document.querySelectorAll(
-        ".neon-card, .project-card, .timeline-item"
-    );
-
-
-const animationObserver =
-    new IntersectionObserver(
-
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (entry.isIntersecting) {
-
-                    entry.target.style.opacity = "1";
-
-                    entry.target.style.transform =
-                        "translateY(0)";
-
-                }
-
-            });
-
-        },
-
-        {
-            threshold: 0.15
-        }
-
-    );
-
-
-animatedElements.forEach(element => {
-
-    element.style.opacity = "0";
-
-    element.style.transform =
-        "translateY(30px)";
-
-    element.style.transition =
-        "opacity 0.7s ease, transform 0.7s ease";
-
-    animationObserver.observe(element);
+    observer.observe(section);
 
 });
-```
 
+
+/* =====================================================
+   CONTACT FORM
+===================================================== */
+
+const contactForm =
+    document.getElementById("contact-form");
+
+const formMessage =
+    document.getElementById("form-message");
+
+
+contactForm.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    const name =
+        document.getElementById("name").value;
+
+    formMessage.textContent =
+        `Thank you, ${name}! Your message has been received.`;
+
+    contactForm.reset();
+
+});
+
+
+/* =====================================================
+   SMOOTH SCROLLING
+===================================================== */
+
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+
+    link.addEventListener("click", function (event) {
+
+        const target =
+            document.querySelector(this.getAttribute("href"));
+
+        if (target) {
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+
+    });
+
+});
+
+
+/* =====================================================
+   PAGE LOAD
+===================================================== */
+
+window.addEventListener("load", () => {
+
+    document.querySelector("#home")
+        .classList.add("visible");
+
+});
